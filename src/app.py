@@ -10,6 +10,10 @@ from api.models import db
 from api.routes import api
 from api.admin import setup_admin
 from api.commands import setup_commands
+# 🟢 Añadimos importaciones de flask-jwt-extended (Hemos tenido que isntalar con pipenv install flask-jwt-extended)
+from flask_jwt_extended import JWTManager
+# 🟢 Añadimos la importación de datetime para jugar con la expiración del token
+import datetime
 
 # from models import Person
 
@@ -39,6 +43,18 @@ setup_commands(app)
 
 # Add all endpoints form the API with a "api" prefix
 app.register_blueprint(api, url_prefix='/api')
+
+# ✅ 🤙🏼👇👇 Configuración del JWT después de inicializar Flask
+# 👉🏻 Configuración de la clave secreta de JWT (Esto debería estar en archivo .env)
+app.config["JWT_SECRET_KEY"] = "123456"
+# 👉🏻 Configuración de la fecha de expiración del token (En este caso 4 hora)
+app.config["JWT_ACCESS_TOKEN_EXPIRES"] = datetime.timedelta(hours=4)
+# 👉🏻 Configuración del formato de tokens (especificar que usaremos Bearer en los headers)
+app.config["JWT_TOKEN_LOCATION"] = ["headers"]
+app.config["JWT_HEADER_NAME"] = "Authorization"
+app.config["JWT_HEADER_TYPE"] = "Bearer"
+# 👉🏻 Inicialización del gestor JWT
+jwt = JWTManager(app)
 
 # Handle/serialize errors like a JSON object
 

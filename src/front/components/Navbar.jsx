@@ -1,19 +1,53 @@
-import { Link } from "react-router-dom";
+import React from "react";
+import { Link, useNavigate } from "react-router-dom";
 
-export const Navbar = () => {
+const Navbar = () => {
+  const navigate = useNavigate();
+  const token = sessionStorage.getItem("token");
 
-	return (
-		<nav className="navbar navbar-light bg-light">
-			<div className="container">
-				<Link to="/">
-					<span className="navbar-brand mb-0 h1">React Boilerplate</span>
-				</Link>
-				<div className="ml-auto">
-					<Link to="/demo">
-						<button className="btn btn-primary">Check the Context in action</button>
-					</Link>
-				</div>
-			</div>
-		</nav>
-	);
+  const handleLogout = () => {
+    sessionStorage.removeItem("token");
+    navigate("/login");
+  };
+
+  return (
+    <nav style={styles.navbar}>
+      <Link to="/" style={styles.link}>Home</Link>
+      {!token ? (
+        <>
+          <Link to="/login" style={styles.link}>Login</Link>
+          <Link to="/signup" style={styles.link}>Signup</Link>
+        </>
+      ) : (
+        <>
+          <Link to="/private" style={styles.link}>Private</Link>
+          <button onClick={handleLogout} style={styles.button}>Logout</button>
+        </>
+      )}
+    </nav>
+  );
 };
+
+const styles = {
+  navbar: {
+    display: "flex",
+    gap: "15px",
+    padding: "10px",
+    backgroundColor: "#282c34",
+  },
+  link: {
+    color: "white",
+    textDecoration: "none",
+    fontSize: "18px",
+  },
+  button: {
+    backgroundColor: "red",
+    color: "white",
+    border: "none",
+    padding: "5px 10px",
+    cursor: "pointer",
+    fontSize: "18px",
+  }
+};
+
+export default Navbar;
